@@ -1,0 +1,117 @@
+/**
+ *   @file: book.h
+ * @author: Vignesh Pugazhenthi
+ *   @date: 11/19/2020
+ *  @brief: this file is the header file and contains just the class Book declarations
+ */
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <fstream>
+#include <vector>
+#include "book.h"
+using namespace std;
+
+void authorSearch (ifstream ins, ofstream out);
+void titleSearch (ifstream ins, ofstream out);
+void yearSearch (ifstream ins, ofstream out);
+void bookAdd (ifstream ins, ofstream out);
+void bookDelete (ifstream ins, ofstream out);
+
+int main(int argc, char const *argv[]) {
+ifstream ins;
+ofstream out;
+vector <Book> choice; //vector
+string option; 
+option = argv[1]; //users input
+
+
+ins.open("bookz.txt"); //opens book file
+if (ins.fail()){
+    cout << "file does not exist" << endl; //check for failure
+    exit(0);
+}
+
+while (!ins.eof()){ //while instream doesn't reach end of file
+    string book; //string
+    while(getline(ins, book)) //while reaching eof getline of book 
+    {
+        choice.push_back(book); //get the book and push it to the front of the vector
+    }
+    ins.close(); //close file
+}
+
+if (argc < 2 || argc > 3) //if argument is less than 2 or greater than 3
+{
+    cout << "Too few or many arguments" << endl; //cout this
+}
+
+if (option == "-a") //if user chooses option a
+{
+    for (size_t i = 0; i < choice.size(); i++) //while i less than size of vector increment
+    {
+        if(choice[i].matchAuthor(argv[2])) //if vector at i matches author function as argument 2
+        {
+           cout << choice[i].getTitle() << "|" << choice[i].getAuthor() << "|" << choice[i].getYear() << endl; //cout vector at i (retrieve title), (retrieve author), (retrieve year)
+        }
+    }
+}
+
+if (option == "-t")
+{
+    for (size_t i = 0; i < choice.size(); i++)
+    {
+        if(choice[i].matchTitle(argv[2]))
+        {
+            cout << choice[i].getTitle() << "|" << choice[i].getAuthor() << "|" << choice[i].getYear() << endl;
+        }
+    }
+}
+
+if (option == "-y")
+{
+    for (size_t i = 0; i < choice.size(); i++)
+    {
+        if(choice[i].matchYear(argv[2]))
+        {
+            cout << choice[i].getTitle() << "|" << choice[i].getAuthor() << "|" << choice[i].getYear() << endl;
+        }
+    }
+}
+
+if (option == "-n")
+{
+    string add; //string add
+    add = argv[2]; //add is the second argument
+    out.open("bookz.txt"); //open file
+    for (size_t i=0; i < choice.size(); i++) //while i is less than size of vector increment
+    {
+        out << choice.at(i).toString() << endl; //outstream vector at i as using toString function
+    }
+    choice.push_back(add); //push back string
+    out << add;
+    cout << "Book has been added!" << endl;
+    
+}
+
+if (option == "-d")
+{
+    string erase;
+    erase = argv[2];
+    ins.open("bookz.txt");
+
+    for (size_t i = 0; i < choice.size(); i++)
+    {
+        if(choice[i].matchTitle(argv[2]) && erase == choice[i])
+        {
+           cout << erase.find(i) << endl;
+           //cout << erase.find(i) << endl;
+        }
+       
+    }
+
+}
+
+return 0;
+
+}
